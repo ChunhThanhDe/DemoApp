@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">DoraemonApp</string>
+    <string name="right">Doraemon cho bạn 1 chiếc bánh rán</string>
+    <string name="wrong">Bạn không xứng đáng ăn bánh rán</string>
+</resources>
