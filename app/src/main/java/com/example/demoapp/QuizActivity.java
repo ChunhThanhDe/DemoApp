@@ -23,15 +23,17 @@ import com.google.firebase.database.ValueEventListener;
 public class QuizActivity extends AppCompatActivity {
 
     ImageView imgage;
-    TextView questionText, timer;
-    Button answer1, answer2, answer3, answer4;
+    TextView questionText;
+    CountDownTimer countDownTimer;
+    TextView score, timer;
+    Button answer1, answer2, answer3, answer4, nextQuestion, cheat;
 
     DatabaseReference reference;
 
-    int total =1;
+    int total =1, totalMax = 2;
     int correct = 0;
     int incorrect = 0;
-    int score = 0;
+    int valueScore = 0;
 
 
     @Override
@@ -47,6 +49,9 @@ public class QuizActivity extends AppCompatActivity {
         answer3 = findViewById(R.id.answer3);
         answer4 = findViewById(R.id.answer4);
         timer = findViewById(R.id.timer);
+        cheat = findViewById(R.id.cheatButton);
+        nextQuestion = findViewById(R.id.nextQuestionButton);
+        score = findViewById(R.id.score);
 
         //set default button color
         answer1.setBackgroundColor(Color.parseColor("#FF6200EE"));
@@ -58,22 +63,27 @@ public class QuizActivity extends AppCompatActivity {
         updateQuestion();
         //set up to out
         reverseTimer(30, timer);
-
-
     }
 
     private void updateQuestion() {
-        if(total > 2){
-            //open result activity
-            total--;
-            Intent intent = new Intent(QuizActivity.this, ResultActivity.class);
 
+        answer4.setEnabled(true);
+        answer2.setEnabled(true);
+        answer3.setEnabled(true);
+        answer1.setEnabled(true);
+
+        if(total > totalMax){
+            countDownTimer.cancel();
+            timer.setText("Completed");
+            //open result activity
+            Intent intent = new Intent(QuizActivity.this, ResultActivity.class);
             // intent.putExtra để truyền dữ liệu qua actitity Result
             // tham số đầu tiên là key , tham số thứ 2 là value
             //ngoài ra có thể dùng blunde
-            intent.putExtra("total", String.valueOf(total));
+            intent.putExtra("total", String.valueOf(total--));
             intent.putExtra("correct", String.valueOf(correct));
             intent.putExtra("incorrect", String.valueOf(incorrect));
+            intent.putExtra("score", String.valueOf(valueScore));
             startActivity(intent);
 
         } else{
@@ -91,10 +101,18 @@ public class QuizActivity extends AppCompatActivity {
                     answer1.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            //enable f để tránh bấm loạn nút
+                            answer4.setEnabled(false);
+                            answer2.setEnabled(false);
+                            answer3.setEnabled(false);
+                            answer1.setEnabled(false);
+
                             //muốn lấy chuổi thuần phải dùng thêm toString()
                             //không dùng toString() sẽ trả về một editable
                             if (answer1.getText().toString().equals(question.rightAnswer)){
 
+                                valueScore+=10;
+                                score.setText("Score : " + String.valueOf(valueScore));
                                 Toast.makeText(getApplicationContext(),"Correct answer", Toast.LENGTH_SHORT).show();
                                 answer1.setBackgroundColor(Color.GREEN);
                                 correct ++;
@@ -148,8 +166,16 @@ public class QuizActivity extends AppCompatActivity {
                     answer2.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+
+                            answer4.setEnabled(false);
+                            answer2.setEnabled(false);
+                            answer3.setEnabled(false);
+                            answer1.setEnabled(false);
+
                             if (answer2.getText().toString().equals(question.rightAnswer)){
 
+                                valueScore+=10;
+                                score.setText("Score : " + String.valueOf(valueScore));
                                 Toast.makeText(getApplicationContext(),"Correct answer", Toast.LENGTH_SHORT).show();
                                 answer2.setBackgroundColor(Color.GREEN);
                                 correct ++;
@@ -199,8 +225,16 @@ public class QuizActivity extends AppCompatActivity {
                     answer3.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+
+                            answer4.setEnabled(false);
+                            answer2.setEnabled(false);
+                            answer3.setEnabled(false);
+                            answer1.setEnabled(false);
+
                             if (answer3.getText().toString().equals(question.rightAnswer)){
 
+                                valueScore+=10;
+                                score.setText("Score : " + String.valueOf(valueScore));
                                 Toast.makeText(getApplicationContext(),"Correct answer", Toast.LENGTH_SHORT).show();
                                 answer3.setBackgroundColor(Color.GREEN);
                                 correct ++;
@@ -250,12 +284,19 @@ public class QuizActivity extends AppCompatActivity {
                     answer4.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+
+                            answer4.setEnabled(false);
+                            answer2.setEnabled(false);
+                            answer3.setEnabled(false);
+                            answer1.setEnabled(false);
+
                             if (answer4.getText().toString().equals(question.rightAnswer)){
 
+                                valueScore+=10;
+                                score.setText("Score : " + String.valueOf(valueScore));
                                 Toast.makeText(getApplicationContext(),"Correct answer", Toast.LENGTH_SHORT).show();
                                 answer4.setBackgroundColor(Color.GREEN);
                                 correct ++;
-
                                 final Handler handler = new Handler();
                                 handler.postDelayed(new Runnable() {
                                     @Override
@@ -298,6 +339,36 @@ public class QuizActivity extends AppCompatActivity {
                         }
                     });
 
+                    cheat.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            valueScore-=5;
+                            score.setText("Score : " + String.valueOf(valueScore));
+                            Toast.makeText(getApplicationContext(), "Hack - 5", Toast.LENGTH_SHORT).show();
+                            if (answer2.getText().toString().equals(question.rightAnswer)) {
+                                answer2.setBackgroundColor(Color.GREEN);
+                            } else if (answer3.getText().toString().equals(question.rightAnswer)) {
+                                answer3.setBackgroundColor(Color.GREEN);
+                            } else if (answer1.getText().toString().equals(question.rightAnswer)) {
+                                answer1.setBackgroundColor(Color.GREEN);
+                            } else if (answer4.getText().toString().equals(question.rightAnswer)) {
+                                answer4.setBackgroundColor(Color.GREEN);
+                            }
+                        }
+                    });
+
+                    nextQuestion.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            valueScore-=10;
+                            score.setText("Score : " + String.valueOf(valueScore));
+                            Toast.makeText(getApplicationContext(), "Score - 10", Toast.LENGTH_SHORT).show();
+                            score.setText(String.valueOf("valueScore"));
+                            total++;
+                            updateQuestion();
+                        }
+                    });
+
                 }
 
                 @Override
@@ -305,11 +376,14 @@ public class QuizActivity extends AppCompatActivity {
 
                 }
             });
+
         }
+
+
     }
 
     public void reverseTimer( int Seconds, final TextView textView){
-        new CountDownTimer(Seconds * 1000 + 1000,1000){
+        countDownTimer = new CountDownTimer(Seconds * 1000 + 1000,1000){
             @Override
             public void onTick(long l) {
                 int seconds = (int) (l/1000);
@@ -323,9 +397,11 @@ public class QuizActivity extends AppCompatActivity {
                 myInrent.putExtra("total", String.valueOf(total--));
                 myInrent.putExtra("correct", String.valueOf(correct));
                 myInrent.putExtra("incorrect", String.valueOf(incorrect));
+                myInrent.putExtra("score", String.valueOf(valueScore));
                 startActivity(myInrent);
 
             }
         }.start();
+
     }
 }

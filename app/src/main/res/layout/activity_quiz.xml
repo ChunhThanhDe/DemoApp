@@ -65,7 +65,7 @@
                 android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:padding="5dp"
-                android:text="Nghèo"
+                android:text="option 3"
                 android:textColor="@color/white" />
 
             <Button
@@ -75,10 +75,11 @@
                 android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:padding="5dp"
-                android:text="option 3"
+                android:text="option 4"
                 android:textColor="@color/white" />
         </LinearLayout>
         <TextView
+            android:id="@+id/score"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Score:"
@@ -90,6 +91,7 @@
             android:orientation="horizontal">
 
             <Button
+                android:id="@+id/cheatButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -99,6 +101,7 @@
                 android:textColor="@color/white" />
 
             <Button
+                android:id="@+id/nextQuestionButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
